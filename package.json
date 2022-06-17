@@ -1,0 +1,18 @@
+{
+    "name": "hr-gifts-project",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Rohit Baisane",
+    "license": "ISC",
+    "dependencies": {
+        "csv-parse": "^5.2.0",
+        "dotenv": "^16.0.1",
+        "express": "^4.18.1",
+        "express-fileupload": "^1.4.0",
+        "jsonwebtoken": "^8.5.1"
+    }
+}
