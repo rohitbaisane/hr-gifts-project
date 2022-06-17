@@ -3,17 +3,25 @@ require('./database');
 const express = require('express');
 const app = express();
 
+const register = require('./models/register');
+
+const cookieParser = require("cookie-parser");
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(require('./auth'));
+
 const { parse } = require('csv-parse');
 const fileUploader = require('express-fileupload');
 const fs = require('fs');
 
-app.use(express.json());
 app.use(fileUploader({
     useTempFiles: true,
     tempFilePath: "/tmp/"
 }));
 
-app.post('/upload', async(req, res) => {
+app.post('/upload', async (req, res) => {
     let myFile = req.files.myCsvFile;
     myFile = fs.readFileSync(myFile.tempFilePath, 'utf-8');
     parse(myFile, { columns: true }, (err, records) => {
