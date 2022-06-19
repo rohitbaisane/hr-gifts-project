@@ -2,17 +2,14 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
-
-require("./database");
-
 const Register = require("./models/register");
-
+router.use(express.json());
 router.get("/", (req, res) => {
     res.send(`Hello world from auth.js`);
 });
 
 // creating a new user
-router.post("/register", async (req, res) => {
+router.post("/register", async(req, res) => {
     const { name, email, password, office_address } = req.body;
 
     try {
@@ -23,7 +20,7 @@ router.post("/register", async (req, res) => {
         } else {
             const register = new Register({ name, email, password, office_address });
 
-            register.password =  bcrypt.hashSync(register.password , 12);
+            register.password = bcrypt.hashSync(register.password, 12);
 
             await register.save();
             return res.status(201).json({ message: "User registered Successfully!" });
@@ -35,7 +32,7 @@ router.post("/register", async (req, res) => {
 
 // User login authentication
 
-router.post("/login", async (req, res) => {
+router.post("/login", async(req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -43,14 +40,12 @@ router.post("/login", async (req, res) => {
 
         if (user) {
 
-            const pass = bcrypt.hashSync(password , 12);
-            
             // if (password === user.password) {
-            if(bcrypt.compareSync(user.password, pass)) {
+            if (bcrypt.compareSync(password, user.password)) {
                 const token = await user.generateAuthToken();
                 console.log(token);
 
-                res.cookie("Jwtoken", token, {
+                res.cookie("Jwttoken", token, {
                     expires: new Date(Date.now() + 25892000000),
                     httpOnly: true
                 });
@@ -59,9 +54,9 @@ router.post("/login", async (req, res) => {
                     id: user._id,
                     accessToken: token,
                     message: "Login Successfully!"
-                });                
+                });
             } else {
-                return res.status(422).json({ error: "Invalid password! please try again." });            
+                return res.status(422).json({ error: "Invalid password! please try again." });
             }
         } else {
             return res.status(422).json({
@@ -73,4 +68,4 @@ router.post("/login", async (req, res) => {
     }
 });
 
-module.exports = router; 
+module.exports = router;
